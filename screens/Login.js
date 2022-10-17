@@ -1,59 +1,134 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Button, ActivityIndicator, ProgressViewIOSComponent, Alert, Keyboard } from 'react-native'
 import React, {useState} from 'react'
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core'
+
 import { useForm , Controller, useController  } from "react-hook-form";
 import Arrow from '../components/Arrow'
+import Loader from '../components/Loader';
+
+
 
 const Login = () => {
+    
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    
+    const [Errors, setError] = React.useState(false);
+    const [errorname, setErrorName] = React.useState("");
 
 const navigation = useNavigation();
-const { register, handleSubmit, control, formState:{errors}, } = useForm({
+const {handleSubmit, control, formState:{errors}, } = useForm({
     defaultValues:{
         email:'',
         password:''
     }
-
 });
-const onSubmit = data => console.log(data);
+  // This function will be triggered when the button is pressed
+  const [loading, setLoading] = useState(false);
+  const login = () => {
+   
+    Keyboard.dismiss();
+    setLoading(true);
+    setTimeout(async () => {
+        setLoading(false);
+        let userData = await AsyncStorage.getItem('user')
+        if(userData) {
+            userData = JSON.parse(userData);
+            if(email == userData.Email && password == userData.Password){
+                AsyncStorage.setItem("user", JSON.stringify({...userData, loggedIn:true})
+                );
+                navigation.navigate('Homescreen')
+            }
+            else{
+                Alert.alert("Error", "Invalid details")
+            }
+        }else{
+            Alert.alert("Error", "User does not exist")
+        }
+    },3000)
+    // async storeToken(user) {
+    //     try {
+    //        await AsyncStorage.setItem("userData", JSON.stringify(user));
+    //     } catch (error) {
+    //       console.log("Something went wrong", error);
+    //     }
+    //   }
+    //   async getToken(user) {
+    //     try {
+    //       let userData = await AsyncStorage.getItem("userData");
+    //       let data = JSON.parse(userData);
+    //       console.log(data);
+    //     } catch (error) {
+    //       console.log("Something went wrong", error);
+    //     }
+    //   }
+    
 
+} 
 
-
-goToForgotPassword = () => navigation.navigate('Forgetpwd')
+   
+ 
+  
+ 
+//   goToForgotPassword = () => navigation.navigate('Forgetpwd')
 
 
   return (
+    
     <View style={styles.container}>
+        <Loader visible={loading}/>
         <View style={styles.top}>
-        <Arrow/>
+        <TouchableOpacity style={styles.arrow}
+     onPress={()=> navigation.replace('Signup')}
+      >
+      <AntDesign name="arrowleft" size={30}/>
+      </TouchableOpacity>
         <Text style={styles.welcometxt}>Welcome!</Text>
         </View>
        
       <View style={styles.input}>
+      <Controller
+           control={control}
+           name="email"
+           rules={{required:'Email is required', message:'Email is required'}}
+           render ={({field:{value, onChange, onBlur}, fieldState:{error}}) => <>
+           <TextInput  style={[styles.textInput2, {borderColor : error ? 'red':'#6495ED'}]} 
+           value={value} 
+        //    secureTextEntry={true}
+           onChangeText={onChange}
+           onBlur={onBlur}
+            placeholder={'Email'} />
+            {error && <Text style={{color:'red', fontSize:14, paddingBottom:15}}>{error.message ||'error'}</Text>}
+          
+          </>
+          } 
+         />
 
-    
-        <TextInput 
-        placeholder='Email' 
-        style={styles.textInput}
-        value={email}
-        onChangeText={text=>setEmail(text) }
-        />
-    
-
-        <TextInput
-         placeholder='Password' 
-        style={styles.textInput2}
-        value={password}
-        onChangeText={text=>setPassword(text) }
-        secureTextEntry
-        />
-
-
-    <TouchableOpacity style={styles.button} onPress={()=> navigation.navigate('Dashboard')}>
+        <Controller
+           control={control}
+           name="password"
+           rules={{required:'Password is required', message:'Password is required'}}
+           render ={({field:{value, onChange, onBlur}, fieldState:{error}}) => <>
+           <TextInput  style={[styles.textInput2, {borderColor : error ? 'red':'#6495ED'}]} 
+           value={value} 
+        //    secureTextEntry={true}
+           onChangeText={onChange}
+           onBlur={onBlur}
+            placeholder={'Password'} />
+            {error && <Text style={{color:'red', fontSize:14,marginTop:10}}>{error.message ||'error'}</Text>}
+          
+          </>
+          } 
+            />
+            <TouchableOpacity style={styles.button} onPress={handleSubmit(login)}>
         <Text style={styles.btntext}>Login</Text>
-    </TouchableOpacity>
+    </TouchableOpacity >
+      
+
+
+    
 
     {/* <View style={styles.option}>
     <Text style={styles.optiontext}>Don't have an account?
@@ -67,9 +142,9 @@ goToForgotPassword = () => navigation.navigate('Forgetpwd')
     <TouchableOpacity style={styles.buttonsignup} onPress={()=> navigation.replace('Signup')} >
         <Text style={styles.signuptxt}>Signup</Text>
     </TouchableOpacity>
-    <TouchableOpacity onPress={goToForgotPassword} style={{marginTop:20}}>
+    {/*<TouchableOpacity  style={{marginTop:20}} onPress={goToForgotPassword}>
         <Text style={{fontSize:18, fontWeight:'bold', color:'#6495ED'}}>Forgot Password?</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     <Text style={styles.linktext}>Or Login with</Text>
     <View style={styles.social}>
     <TouchableOpacity onPress={()=> navigation.navigate('Drawer')}>
@@ -157,7 +232,8 @@ const styles = StyleSheet.create({
          fontSize:24, 
         fontWeight:'bold',
         alignSelf:'center',
-        paddingTop:10
+        paddingTop:10,
+        position:'absolute'
     },
     buttonsignup:{
         marginTop:30,
@@ -206,5 +282,9 @@ const styles = StyleSheet.create({
     },
     linkdn:{
         paddingLeft:40
-    }
+    },
+    arrow:{
+        marginTop:40,
+        marginHorizontal:20
+    },
     });

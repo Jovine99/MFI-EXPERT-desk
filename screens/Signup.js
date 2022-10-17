@@ -1,43 +1,111 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Alert, ActivityIndicator,  } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {useState} from 'react'
 import { Entypo, AntDesign } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/core';
+import { useForm , Controller, useController  } from "react-hook-form";
 import Arrow from '../components/Arrow'
+import Loader from '../components/Loader';
 
 
 const Signup = () => {
     const [email, setEmail] = useState('');
     const [name, setName] = useState('');
     const [password, setPassword] = useState('');
+    
+    const {control,  handleSubmit, formState:{errors},} = useForm({
+        defaultValues:{
+            userName:'',
+            email:'',
+            password:'',
+        }
+    });
+    
+    
+    const onSubmit = (e) => {
+        setLoading(true);
+        setTimeout(() =>{
+            setLoading(false);
+            try{
+                AsyncStorage.setItem("user", JSON.stringify(name, email, password));
+                navigation.navigate('Dashboard')
+            }
+            catch (error){
+                Alert.alert("Error", "Something went wrong")
+            }
+        }, 3000)
+
+            
+        }
+        
+       
+    
+    const [loading, setLoading] = React.useState(false)
 
     const navigation = useNavigation();
-    // if (!name.trim()) {
-    //     alert('Please Enter Name');
-    //     return;
-    //   }
-    //   //Check for the Email TextInput
-    //   if (!email.trim()) {
-    //     alert('Please Enter Email');
-    //     return;
-    //   }
-    //   //Checked Successfully
-    //   //Do whatever you want
-    //   alert('Success');
     
-
   return (
     <View style={styles.container}>
-        
+        <Loader visible={loading}/>
         <View style={styles.top}>
             <Text style={styles.welcometxt}>Welcome!</Text>
         </View>
      <View style={styles.input}>
-        <TextInput placeholder='Username' style={styles.textInput}
+     <Controller
+           control={control}
+           name="userName"
+           rules={{required:'Username is required', message:'Username is required'}}
+           render ={({field:{value, onChange, onBlur}, fieldState:{error}}) => <>
+           <TextInput  style={[styles.textInput, {borderColor : error ? 'red':'#6495ED'}]} 
+           value={value} 
+           onChangeText={onChange}
+           onBlur={onBlur}
+            placeholder={'Username'} />
+            {error && <Text style={{color:'red', fontSize:14,marginTop:10}}>{error.message ||'error'}</Text>}
+          
+          </>
+          } 
+            />
+            <Controller
+           control={control}
+           name="email"
+           rules={{required:'Email is required', message:'Email is required'}}
+           
+      
+           render ={({field:{value, onChange, onBlur}, fieldState:{error}}) => <>
+           <TextInput  style={[styles.textInput2, {borderColor : error ? 'red':'#6495ED'}]} 
+           value={value} 
+           onChangeText={onChange}
+           onBlur={onBlur}
+            placeholder={'Email'} />
+            {error && <Text style={{color:'red', fontSize:14, paddingBottom:15}}>{error.message ||'error'}</Text>}
+          
+          </>
+          } 
+            />
+            <Controller
+           control={control}
+           name="password"
+           rules={{required:'Password is required', message:'Password is required'}}
+           render ={({field:{value, onChange, onBlur}, fieldState:{error}}) => <>
+           <TextInput  style={[styles.textInput, {borderColor : error ? 'red':'#6495ED'}]} 
+           value={value} 
+        //    secureTextEntry={true}
+           onChangeText={onChange}
+           onBlur={onBlur}
+            placeholder={'Password'} />
+            {error && <Text style={{color:'red', fontSize:14,marginTop:10}}>{error.message ||'error'}</Text>}
+          
+          </>
+          } 
+            />
+        
+        {/* <TextInput placeholder='Username' style={styles.textInput}
          value={name}
-         onChangeText={text=>setName(text) }
+         onChangeText={text=>setName(text)}
+        
         />
-    
-
+        
         <TextInput placeholder='Email' style={styles.textInput2}
          value={email}
          onChangeText={text=>setEmail(text) }/>
@@ -47,10 +115,10 @@ const Signup = () => {
      value={password}
      onChangeText={text=>setPassword(text) }
      secureTextEntry
-    />
+    /> */}
    
 
-    <TouchableOpacity style={styles.button}>
+    <TouchableOpacity style={styles.button} onPress={handleSubmit(onSubmit)}>
         <Text style={styles.btntext}>Signup</Text>
     </TouchableOpacity >
     <TouchableOpacity style={styles.buttonlogin} onPress={()=> navigation.replace('Login')} >
