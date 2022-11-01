@@ -1,87 +1,190 @@
-import { View, Text , StyleSheet, TouchableOpacity, ScrollView, FlatList} from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React, {useState, useEffect} from 'react'
+import Posts from '../components/Posts'
+import Pagination from '../components/Pagination'
+import { useNavigation } from '@react-navigation/core'
 import { Foundation,MaterialCommunityIcons, AntDesign, EvilIcons   } from '@expo/vector-icons';
 
 
-
-export default function Tickets({navigation}) {
-  const [data, setData] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [visible, setVisible] = useState(true);
-
-  const url = "http://api.mfiexpert.com/helpdesk/gettickets";
-
-  useEffect(() =>{
-    fetch(url)
-    .then((response) =>response.json())
-    .then((json) =>setData(json))
-    .catch((error) => console.error(error))
-    .finally(() =>setLoading(false))
-  }, [])
-  {data.map((gettickets)=>(
-    <Text>{gettickets.TicketDate}</Text>
+const renderData = (data) => {
+  const navigation = useNavigation()
+  return (
+ 
+ <View style={styles.renderView}>
+      {data.map((gettickets, index) => {
+        return (
+        <TouchableOpacity style={styles.miniview} key={index} onPress={()=> navigation.navigate('Viewticket',{TicketNo:gettickets.TicketNo,Subject:gettickets.Subject, TicketStatus:gettickets.TicketStatus, Priority:gettickets.Priority, TicketType:gettickets.TicketType, TicketDate:gettickets.TicketDate})}>
+          <Text style={{fontWeight:'bold'}}>{gettickets.Subject}</Text> 
+          <Text style={{fontSize:18}}>{gettickets.TicketNo}</Text> 
+          </TouchableOpacity>);
+             
+      })}
+      
+    </View>
     
-  ))}
-  {data.map((gettickets)=>(
-    <Text>{gettickets.TicketStatus}</Text>
+   
     
-  ))}
-  {data.map((gettickets)=>(
-    <Text>{gettickets.Priority}</Text>
+  );
+    }
     
-  ))}
-
+function Open() {
   
 
+const [data, setData] = useState([]);
+
+  const [currentPage, setcurrentPage] = useState(1);
+  const [itemsPerPage, setitemsPerPage] = useState(10);
+
+  const [pageNumberLimit, setpageNumberLimit] = useState(5);
+  const [maxPageNumberLimit, setmaxPageNumberLimit] = useState(5);
+  const [minPageNumberLimit, setminPageNumberLimit] = useState(0);
+
+  const handleClick = (event) => {
+    setcurrentPage(Number(event.target.id));
+  };
+
+  const pages = [];
+  for (let i = 1; i <= Math.ceil(data.length / itemsPerPage); i++) {
+    pages.push(i);
+  }
+
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = data.slice(indexOfFirstItem, indexOfLastItem);
+
+  const renderPageNumbers = pages.map((number) => {
+    if (number < maxPageNumberLimit + 1 && number > minPageNumberLimit) {
+      return (
+        <Text
+          key={number}
+          id={number}
+          onPress={handleClick}
+          // className={currentPage == number ? "active" : null}
+        >
+          {number}
+        </Text>
+      );
+    } else {
+      return null;
+    }
+  });
+
+  useEffect(() => {
+    fetch("http://api.mfiexpert.com/helpdesk/gettickets?")
+      .then((response) => response.json())
+      .then((json) => setData(json));
+  }, []);
+
+  const handleNextbtn = () => {
+    setcurrentPage(currentPage + 1);
+
+    if (currentPage + 1 > maxPageNumberLimit) {
+      setmaxPageNumberLimit(maxPageNumberLimit + pageNumberLimit);
+      setminPageNumberLimit(minPageNumberLimit + pageNumberLimit);
+    }
+  };
+
+  const handlePrevbtn = () => {
+    setcurrentPage(currentPage - 1);
+
+    if ((currentPage - 1) % pageNumberLimit == 0) {
+      setmaxPageNumberLimit(maxPageNumberLimit - pageNumberLimit);
+      setminPageNumberLimit(minPageNumberLimit - pageNumberLimit);
+    }
+  };
+
+  let pageIncrementBtn = null;
+  if (pages.length > maxPageNumberLimit) {
+    pageIncrementBtn = <Text onClick={handleNextbtn}> &hellip; </Text>;
+  }
+
+  let pageDecrementBtn = null;
+  if (minPageNumberLimit >= 1) {
+    pageDecrementBtn = <Text onClick={handlePrevbtn}> &hellip; </Text>;
+  }
+
+  const handleLoadMore = () => {
+    setitemsPerPage(itemsPerPage + 10);
+  };
+
+
  
-  return (
-    <View style={styles.container}>
-     <View style={styles.header}>
+
+
+return (
+  <>
+      {/* <h1>Todo List</h1> <br /> */}
+      <View style={styles.header}>
       <TouchableOpacity style={styles.arrow}
-     onPress={()=> navigation.replace('Dashboard')}
+    //  onPress={()=> navigation.replace('Dashboard')}
       >
-      <AntDesign name="arrowleft" size={30}/>
+      <AntDesign name="arrowleft" size={30} style={styles.arrow}/>
       </TouchableOpacity>
         <Text style={styles.Theader}>List Of Tickets</Text>
       </View>
       <ScrollView style={styles.sc}>
-      <View style={{marginTop:40}}>
-       
-          <View style={{justifyContent:'space-between', marginHorizontal:20, paddingVertical:10,marginTop:30,paddingHorizontal:10}}>
-          </View>
+      {renderData(currentItems)}
+      <View style={styles.bottomview}>
+        <View >
+          <TouchableOpacity style={{flexDirection:'row',backgroundColor:'#6495ED',fontWeight:'bold',  width:'120%', height:40, }}
+            onPress={handlePrevbtn}
+            disabled={currentPage == pages[0] ? true : false}
+          >
+             <AntDesign name="arrowleft" size={20} style={{color:'#fff', paddingTop:10, paddingLeft:5}}/>
+          <Text style={{fontSize:18, color:'#fff', fontWeight:'bold', alignSelf:'center',  paddingTop:2, paddingHorizontal:10}}>Prev</Text>
+          </TouchableOpacity>
+        </View>
+        {/* {pageDecrementBtn}
+        {renderPageNumbers}
+        {pageIncrementBtn} */}
 
+        <View>
+          <TouchableOpacity style={{flexDirection:'row', backgroundColor:'#6495ED', width:'100%', height:40, }}
+            onPress={handleNextbtn}
+            disabled={currentPage == pages[pages.length - 1] ? true : false}
+          >
            
-            {/* <Text>Priority: {gettickets.Priority}</Text> */}
-            {/* <Text>TicketStatus: {gettickets.TicketStatus}</Text> */}
-            {loading ? (<Text style={{fontSize:18, justifyContent:'center', alignSelf:'center', marginTop:300,}}>Loading....</Text>) : (
-            data.map((gettickets, TicketNo)=>(
-           <TouchableOpacity style={{borderColor:'#6495ED',elevation:2, backgroundColor:'#fff', height:100, borderWidth:1, paddingHorizontal:20, paddingTop:20, justifyContent:'space-evenly', borderRadius:20, marginHorizontal:20, paddingVertical:10,marginTop:30,paddingHorizontal:10}} key={TicketNo}
-            onPress={()=> navigation.navigate('Viewticket',{TicketNo:gettickets.TicketNo,Subject:gettickets.Subject, TicketStatus:gettickets.TicketStatus, Priority:gettickets.Priority, TicketType:gettickets.TicketType, TicketDate:gettickets.TicketDate})}> 
-            <Text style={{fontWeight:'bold'}} key={gettickets.TicketNo}>{gettickets.Subject}</Text>
-            <Text style={{fontSize:18}}>TicketType: {gettickets.TicketType}</Text>
-            </TouchableOpacity>
-           
-           
-          
-        ))
-       )
-
-       }
-       {/* <TouchableOpacity >
-        <Text>View List of tickets</Text>
-       </TouchableOpacity> */}
-      </View>
+            <Text style={{fontSize:18, color:'#fff', fontWeight:'bold', alignSelf:'center', paddingHorizontal:10, paddingTop:2}}> Next</Text>
+            <AntDesign name="arrowright" size={20} color="#fff" style={{color:'#fff', paddingTop:10, paddingRight:10}}/>
+          </TouchableOpacity>
+        </View>
+        </View>
+      
+    
       </ScrollView>
-    </View>
-  )
+    </>
+);
 }
+export default Open
 const styles = StyleSheet.create({
-container:{
-    flex:1,
-    backgroundColor:'#EAECEE'
+  renderView:{
+    marginTop:40,
+    marginHorizontal:20
+  },
+  miniview:{
+    borderColor:'#6495ED',
+    elevation:2, 
+    backgroundColor:'#fff',
+     height:100,
+     borderWidth:1, 
+    paddingHorizontal:20, 
+    paddingTop:20, 
+    justifyContent:'space-evenly',
+     borderRadius:20,
+     marginHorizontal:20,
+     paddingVertical:10,
+    marginTop:30,
+    paddingHorizontal:10
+  },
+  sc:{
+    marginBottom:40,
+    marginTop:40,
+    
 },
 arrow:{
-  marginTop:20,
+  marginTop:10,
+  color:'#000080',
   // marginHorizontal:20
 },
 header:{
@@ -101,12 +204,14 @@ Theader:{
   fontSize:28,
   fontWeight:'bold',
   marginHorizontal:40,
- 
+
   color:'#000080',
   // color:'#fff'
 },
-sc:{
-    marginBottom:60,
-    marginTop:20
+bottomview:{
+  flexDirection:'row',
+  justifyContent:'space-evenly',
+  marginTop:20,
+  paddingBottom:20
 }
 })

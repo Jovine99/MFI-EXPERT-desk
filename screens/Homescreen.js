@@ -27,7 +27,7 @@ export default function Tickets({navigation}) {
     <View style={styles.container}>
   
       <ScrollView style={styles.sc}>
-      <View style={{marginTop:40}}>
+      <View style={{marginTop:-40}}>
        
           <View style={{justifyContent:'space-between', marginHorizontal:20, paddingVertical:10,marginTop:30,paddingHorizontal:10}}>
           </View>
@@ -36,7 +36,7 @@ export default function Tickets({navigation}) {
             {/* <Text>Priority: {gettickets.Priority}</Text> */}
             {/* <Text>TicketStatus: {gettickets.TicketStatus}</Text> */}
             {loading ? (<Text style={{fontSize:18, justifyContent:'center', alignSelf:'center', marginTop:300,}}>Loading....</Text>) : (
-            data.map((gettickets, TicketNo)=>(
+            data.slice(0,7).map((gettickets, TicketNo)=>(
            <View style={{borderColor:'#6495ED',elevation:2, backgroundColor:'#fff', height:100, borderWidth:1, paddingHorizontal:20, paddingTop:20, justifyContent:'space-evenly', borderRadius:20, marginHorizontal:20, paddingVertical:10,marginTop:30,paddingHorizontal:10}} key={TicketNo}> 
             <Text style={{fontWeight:'bold'}} key={gettickets.TicketNo}>{gettickets.Subject}</Text>
             <Text style={{fontSize:18}}>TicketType: {gettickets.TicketType}</Text>

@@ -28,19 +28,19 @@ export default function Tickets({route, navigation}) {
       <TouchableOpacity style={styles.arrow}
      onPress={()=> navigation.navigate('Tickets')}
       >
-      <AntDesign name="arrowleft" size={30}/>
+      <AntDesign name="arrowleft" size={30} style={styles.arrow}/>
       </TouchableOpacity>
-        <Text style={styles.Theader}>View Ticket</Text>
+        <Text style={styles.Theader}>View Your Ticket</Text>
       </View>
     
-        <Text style={{marginTop:40, marginHorizontal:40, fontSize:30 , color:'#6495ED'}}>View your Ticket Details from our Desk</Text>
+        {/* <Text style={{marginTop:40, marginHorizontal:40, fontSize:30 , color:'#6495ED'}}>View your Ticket Details from our Desk</Text> */}
       
       <ScrollView style={styles.sc}>
     
        
-          <View style={{marginHorizontal:20,alignSelf:'center', borderWidth:1,padding:20, width:'80%', borderColor:'#6495ED', marginTop:60, backgroundColor:'#fff', elevation:1, borderRadius:10,}}>
-          <Text style={{fontSize:20, fontWeight:'bold',paddingTop:10}}>{route.params.Subject}</Text>
-        <Text style={{fontSize:18, marginTop:10,}}>TicketNo: {route.params.TicketNo}</Text>
+          <View style={{marginHorizontal:20,alignSelf:'center', padding:20, width:'80%', borderColor:'#6495ED', marginTop:60, backgroundColor:'#fff',borderRadius:10, height:400}}>
+          <Text style={{fontSize:20, fontWeight:'bold',paddingTop:20, color:'#6495ED'}}>{route.params.Subject}</Text>
+        <Text style={{fontSize:18, marginTop:10,paddingTop:10}}>TicketNo: {route.params.TicketNo}</Text>
         <Text style={{fontSize:18, marginTop:10, }}>Priority: {route.params.Priority}</Text>
         <Text style={{fontSize:18, marginTop:10, }}>TicketDate: {route.params.TicketDate}</Text>
         <Text style={{fontSize:18, marginTop:10, }}>TicketStatus: {route.params.TicketStatus}</Text>
@@ -56,6 +56,7 @@ container:{
 },
 arrow:{
   marginTop:10,
+  color:'#000080'
   // marginHorizontal:20
 },
 header:{
@@ -77,6 +78,7 @@ Theader:{
     fontWeight:'bold',
     marginHorizontal:60,
     color:'#000080',
+    
     // color:'#fff'
 },
 sc:{

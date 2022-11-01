@@ -11,7 +11,7 @@ import Viewticket from './Viewticket';
 import Homescreen from './Homescreen';
 import Logout from './Logout';
 import About from './About';
-import Open from './Open';
+import Open from './Open'
 import { AuthContext } from '../components/Context'; 
 import { useNavigation } from '@react-navigation/core'
 
@@ -136,22 +136,8 @@ setTimeout(() =>{
     }}
      
       />
-      <Drawer.Screen
-        name="Open"
-        component={Open}
-        options={{ drawerLabel: 'Open',
-        headerShown:false,
-        drawerLabelStyle:{
-            fontSize:22,
-            marginHorizontal:10
-        },
-        drawerIcon: ({focused, size}) => (
-            <Fontisto name="ticket-alt" size={30} color="black" style={{marginHorizontal:10}} />
-         ),
-       
-    }}
-     
-      />
+      
+      
       <Drawer.Screen
       
         name="Tickets"
