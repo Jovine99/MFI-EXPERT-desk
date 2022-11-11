@@ -40,10 +40,10 @@ export default function Tickets({route, navigation}) {
        
           <View style={{marginHorizontal:20,alignSelf:'center', padding:20, width:'80%', borderColor:'#6495ED', marginTop:60, backgroundColor:'#fff',borderRadius:10, height:400}}>
           <Text style={{fontSize:20, fontWeight:'bold',paddingTop:20, color:'#6495ED'}}>{route.params.Subject}</Text>
-        <Text style={{fontSize:18, marginTop:10,paddingTop:10}}>TicketNo: {route.params.TicketNo}</Text>
+        <Text style={{fontSize:18, marginTop:10,paddingTop:10}}>Ticket No: {route.params.TicketNo}</Text>
         <Text style={{fontSize:18, marginTop:10, }}>Priority: {route.params.Priority}</Text>
-        <Text style={{fontSize:18, marginTop:10, }}>TicketDate: {route.params.TicketDate}</Text>
-        <Text style={{fontSize:18, marginTop:10, }}>TicketStatus: {route.params.TicketStatus}</Text>
+        <Text style={{fontSize:18, marginTop:10, }}>Ticket Date: {route.params.TicketDate}</Text>
+        <Text style={{fontSize:18, marginTop:10, }}>Ticket Status: {route.params.TicketStatus}</Text>
           </View>
       </ScrollView>
     </View>

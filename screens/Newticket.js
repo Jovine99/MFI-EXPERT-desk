@@ -51,26 +51,26 @@ export default function Newticket({navigation}) {
       
 
   });
-  // const onSubmit = (data) => {
-  //   setLoading(true);
-  //   setTimeout(() =>{
-  //       setLoading(false);
-  //       try{
-  //           AsyncStorage.setItem("user", JSON.stringify(subject, description));
-  //           navigation.navigate('Newticket')
-  //       }
-  //       catch (error){
-  //           Alert.alert("Error", "Something went wrong")
-  //       }
-  //   }, 1000)
+  const onSubmit = (data) => {
+    setLoading(true);
+    setTimeout(() =>{
+        setLoading(false);
+        try{
+            AsyncStorage.setItem("user", JSON.stringify(subject, description));
+            navigation.navigate('Newticket')
+        }
+        catch (error){
+            Alert.alert("Error", "Something went wrong")
+        }
+    }, 1000)
 
         
-  //   }
-  const onSubmit = data => {
-    console.log(data)
+    };
+  // const onSubmit = data => {
+  //   console.log(data)
     
 
-  }
+  // }
     
     const [loading, setLoading] = React.useState(false)
     const pickImage = async () => {

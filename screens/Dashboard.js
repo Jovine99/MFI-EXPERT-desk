@@ -65,7 +65,7 @@ function Dashboard() {
  useEffect(()=>{
 setTimeout(() =>{
   setIsLoading(false)
-}, 2000)
+}, 1000)
  }, []);
  if(isLoading){
   return(
@@ -89,19 +89,7 @@ setTimeout(() =>{
      
     }}
      drawerContent={(props) => <CustomDrawer {...props}/> }
-      // return (
       
-      //     <SafeAreaView>
-      //      
-         
-      //     <DrawerItemList {...props} />
-           
-      //     </SafeAreaView>
-          
-         
-   
-      // );
-    // }}
       
      >
       
@@ -146,7 +134,7 @@ setTimeout(() =>{
           headerShown: false,
             drawerLabel: 'List of Tickets',
             drawerLabelStyle:{
-                fontSize:22,
+                fontSize:22,   
                 marginHorizontal:10
             },
             drawerIcon: ({focused, size}) => (

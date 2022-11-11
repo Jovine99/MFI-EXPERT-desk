@@ -109,7 +109,7 @@ const [data, setData] = useState([]);
   };
 
 
- 
+  const navigation = useNavigation()
 
 
 return (
@@ -117,7 +117,7 @@ return (
       {/* <h1>Todo List</h1> <br /> */}
       <View style={styles.header}>
       <TouchableOpacity style={styles.arrow}
-    //  onPress={()=> navigation.replace('Dashboard')}
+     onPress={()=> navigation.replace('Dashboard')}
       >
       <AntDesign name="arrowleft" size={30} style={styles.arrow}/>
       </TouchableOpacity>
@@ -159,7 +159,7 @@ return (
 export default Open
 const styles = StyleSheet.create({
   renderView:{
-    marginTop:40,
+    marginTop:10,
     marginHorizontal:20
   },
   miniview:{
